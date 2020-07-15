@@ -1,0 +1,114 @@
+![Untitled](https://user-images.githubusercontent.com/65515378/87181787-4c1e1680-c2b9-11ea-987d-149a645efa6f.png)
+
+# Comic_getter
+Comic_getter is a python script that allows users to download comics from readcomiconline.to. It has been tested on MacOS, but theoretically it should work on every OS.
+
+## Table of Content
+* [Installation](#Installation)
+    * [Python 3](#Python-3)
+    * [PyPI Dependencies](#PyPI-Dependencies)
+    * [Google Chrome and Chromedriver](#Google-Chrome-and-Chromedriver)
+* [Usage](#Usage)
+    * [Command Line Commands](#Command-Line-Commands)
+    * [First time around](#First-time-around)
+    * [Examples](#Examples)
+* [Features](#Features)
+* [Troubleshooting](#Troubleshooting)
+* [Issues and Suggestions](#Issues-and-Sugestions)
+* [License](#License)
+* [Donations](#Donations)
+
+## Installation
+
+### Python 3
+
+The script requires python 3.x to run. I leave a link [here](https://www.python.org/downloads/) to the official web page from which one can download the installer.
+
+### PyPI Dependencies
+
+Comic_getter depends on several different packages available in PyPI. If python 3 is already installed, one can simply use the package manager pip3 to install all the dependencies listed.
+
+```bash
+pip3 install -r requirements.txt
+```
+Is important to have in mind requirements.txt should be replaced with the path to requirements.txt.
+
+### Google Chrome and Chromedriver
+
+Comic_getter works with Selenium package to bypass cloudflare simulating to be a user that opens Google Chrome. Thus, it requires for Google Chrome and Chromedriver to be installed and the Chromedriver must match your Google Chrome's version. 
+
+* [Here](https://www.google.com/intl/es-419/chrome/) is the link to chrome installer.
+
+To check what Google Chrome version is installed an individual needs to press the three dot icon on the top right corner of any chrome tab, open the help sub menu and select "about Google Chrome" option.
+
+<img width="720" alt="Screen Shot 2020-07-10 at 19 23 08" src="https://user-images.githubusercontent.com/65515378/87235165-6803e400-c3af-11ea-8d45-35a7aa0e82dc.png">
+
+Only the first 2 digits in version, below the chrome icon, matter.
+
+<img width="720" alt="Screen Shot 2020-07-10 at 19 23 18" src="https://user-images.githubusercontent.com/65515378/87235168-73570f80-c3af-11ea-909e-925c3e44c776.png">
+
+* [Here](https://sites.google.com/a/chromium.org/chromedriver/downloads) is the link to different chromedriver versions and installers.
+
+## Usage
+
+### Command Line Commands
+```bash
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUT, --input INPUT 
+                        Get comic and all of it's issues from main link.
+  -c, --config          Edit config file.
+  -s SKIP, --skip SKIP  Number of issues to skip.
+  ```
+### First time around
+The first time comic_getter.py is run it will prompt users to fill certain fields (download directory path and chromedriver path). 
+
+* __Download directory path__ is the location of the directory where comics will be downloaded. By default the comics are downloaded in the CWD.
+* __Chromedriver path__ is the location of the chromedriver. It has no default value and the program will not work if the path is not inputed.
+
+### Examples
+
+Like every other python script it can be executed with python or python 3 command followed by the path to main.py then the corresponding flag and the variable value, if any is required.
+
+For instance, if all issues of [Joker: Last Laugh](https://readcomiconline.to/Comic/Joker-Last-Laugh) are to be downloaded, the following command should do the work:
+
+```bash
+python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Joker-Last-Laugh
+```
+
+If the first 3 issues are not wanted, the -s flag can be used:
+
+```bash
+python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Joker-Last-Laugh -s 3
+```
+If a change is needed to be done to config.json, the -c flag should be used:
+
+```bash
+python3 path/to/__main__.py -c
+```
+
+## Features
+
+Almost every feature has already been explained, but here is a short list that compiles them all.
+
+* Download all issues from a single comic in readcomiconline.to .
+* Skip unwanted comics.
+* Resume download by skipping already downloaded comics. The script considers an issue downloaded when it creates the directory with its name (Notice that if the download is stopped in the middle of an issue being downloaded, you will need to manually delete this last folder in order for the program to re download the issue).
+
+## Troubleshooting
+
+I have found two bugs after several iterations of the program. The first happened when readcomiconline.to triggered a reCAPTCHA that needs to be bypassed manually either on Google Chrome or the Automated Chrome Tab (the one opened by selenium). After that i simply restarted the script and it continued downloading. A more drastic approach that may work is to change the IP using a VPN after an arbitrary number of downloads, but it has not been tested.
+
+The other problem I have encountered with was a 503 Error that I believe happened due to the host (readcomiconline.to) adding a new comic to the site so the server was, for a minute or two, down. After waiting for a while I ran the program and it worked perfectly.
+
+## Issues and Suggestions
+
+I am open to any kind of suggestion and will try to solve issues as soon as possible. Still it may take a while until I actually find a solution or I manage to add a certain feature. You have my full consent to just fork the repository and fix it yourself.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE.md](https://github.com/magnuschase293/comic_getter/blob/master/LICENSE) file for details
+
+## Donations
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](paypal.me/magnuschase293)
