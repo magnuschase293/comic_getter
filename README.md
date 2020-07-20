@@ -111,4 +111,4 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## Donations
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](paypal.me/magnuschase293)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/magnuschase293)
