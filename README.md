@@ -57,7 +57,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -i INPUT, --input INPUT 
                         Get comic and all of it's issues from main link.
-      --single SINGLE   Get a single issue from a certain comic.
+      --single SINGLE   Get a single issue from a certain comic from it's link.
   -c, --config          Edit config file.
   -s SKIP, --skip SKIP  Number of issues to skip.
   ```
