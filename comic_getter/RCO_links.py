@@ -15,7 +15,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 
-#Pending make skipable issues and consider allowing hq download.
+# Pending make skipable issues and consider allowing hq download.
+
+
 class RCO_Comic:
     '''Collection of functions that allow to download a 
     readcomiconline.to comic with all it's issues.'''
@@ -27,13 +29,14 @@ class RCO_Comic:
         self.main_link = main_link
 
         # Extract data from config.json
-        dir_path = Path(f"{os.path.dirname(os.path.abspath(__file__))}/config.json")
+        dir_path = Path(f"{os.path.dirname(os.path.abspath(__file__))}"
+                        "/config.json")
         with open(dir_path) as config:
             data = json.load(config)
 
         self.driver_path = data["chromedriver_path"]
         self.download_directory_path = data["download_dir"]
-        
+
     def get_issues_links(self):
         '''Gather all individual issues links from main link.'''
 
@@ -68,9 +71,9 @@ class RCO_Comic:
         driver.set_window_size(1, 1)
         driver.get(issue_link)
 
-        # A 3600 second = 1 hour time gap is given for browser to bypass 
-        # cloudflare and for browser to fetch all issues pages before triggering 
-        # an exception. Such a time is never to be reached
+        # A 3600 second = 1 hour time gap is given for browser to bypass
+        # cloudflare and for browser to fetch all issues pages before
+        # triggering an exception. Such a time is never to be reached
         # and as soon as these events happen the program will continue.
         wait = WebDriverWait(driver, 3600)
         wait.until(ec.visibility_of_element_located(
@@ -80,8 +83,8 @@ class RCO_Comic:
         select = Select(driver.find_element_by_id('selectReadType'))
         select.select_by_index(1)
         time.sleep(2)
-        
-        #An explicit wait is trigger to wait for imgLoader to disappear
+
+        # An explicit wait is trigger to wait for imgLoader to disappear
         wait.until(ec.invisibility_of_element((By.ID, "imgLoader")))
         element = driver.find_element_by_id("divImage")
         raw_pages_links = element.get_attribute('innerHTML')
@@ -101,20 +104,21 @@ class RCO_Comic:
 
     def get_comic_and_issue_name(self, issue_link):
         '''Finds out comic and issue name from link.'''
-        
+
         # Re module is used to get issue and comic name.
         generic_comic_name = re.compile(r"(?<=comic/)(.+?)/(.+?)(?=\?)", re.I)
         name_and_issue = re.search(generic_comic_name, issue_link)
 
-        # comic_issue_names[0] is the comic's link name, comic_issue_names[1] is
-        # the comic name and comic_issue_names[2] is the issues name.
+        # comic_issue_names[0] is the comic's link name, comic_issue_names[1] 
+        #is the comic name and comic_issue_names[2] is the issues name.
         comic_issue_name = [issue_link, name_and_issue[1], name_and_issue[2]]
         return comic_issue_name
 
     def is_comic_downloaded(self, comic_issue_name):
         '''Checks if comic has already been downloaded.'''
 
-        download_path = Path(f"{self.download_directory_path}/{comic_issue_name[1]}/{comic_issue_name[2]}")
+        download_path = Path(f"{self.download_directory_path}"
+                             f"/{comic_issue_name[1]}/{comic_issue_name[2]}")
         if os.path.exists(download_path):
             print(f"{comic_issue_name[2]} has already been downloaded.")
             return True

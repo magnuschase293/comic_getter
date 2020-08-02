@@ -3,15 +3,16 @@ import sys
 import json
 from pathlib import Path
 
+
 class ConfigJSON:
     '''Group of all functions that create and modify Config.json .'''
+
     def __init__(self):
         '''Initialize main dir path used in several methods.'''
         self.dir = os.path.dirname(os.path.abspath(__file__))
 
     def change(self):
         '''Allows user to select an attribute in cofig.json and change it.'''
-
 
         while True:
             print("0. Change download dir.")
@@ -36,9 +37,9 @@ class ConfigJSON:
     def chromedriver_path(self):
         '''Choose chromedriver dir.'''
         print("Write the path to the chromedriver:\n (Have in mind the program"
-            " only checks if the path leads to a file and not a dir. Also "
-            "check that chromedriver version matches your chrome browser.")
-        while True:      
+              " only checks if the path leads to a file and not a dir. Also "
+              "check that chromedriver version matches your chrome browser.")
+        while True:
             chromedriver_path = input(" >>  ")
             if chromedriver_path:
                 if os.path.isfile(chromedriver_path.strip()):
@@ -49,20 +50,20 @@ class ConfigJSON:
                 print("Path is required.")
 
     def config_create(self):
-        '''Creates config.json.''' 
-        config_path= os.path.join(self.dir, "config.json")
+        '''Creates config.json.'''
+        config_path = os.path.join(self.dir, "config.json")
         download_dir = self.download_dir()
         print()
         chromedriver_path = self.chromedriver_path()
         print()
-        data ={
-        "download_dir": str(download_dir),
-        "chromedriver_path": str(chromedriver_path)
+        data = {
+            "download_dir": str(download_dir),
+            "chromedriver_path": str(chromedriver_path)
         }
         with open(config_path, "w") as config:
             json.dump(data, config)
         print("\nDone.\n")
-        
+
     def config_exists(self):
         '''Check if movies_list.json exists.'''
         main_path = os.path.dirname(os.path.abspath(__file__))
@@ -71,10 +72,10 @@ class ConfigJSON:
 
     def download_dir(self):
         '''Set download dir.'''
-        print("Write the path to the download dir:\n (By default the " 
-            "program will create a dir to contain comic and issues in " 
-            "the cwd).\n")
-        while True:      
+        print("Write the path to the download dir:\n (By default the "
+              "program will create a dir to contain comic and issues in "
+              "the cwd).\n")
+        while True:
             download_dir = input(" >>  ")
             if download_dir:
                 if os.path.isdir(download_dir.strip()):
@@ -89,7 +90,7 @@ class ConfigJSON:
 
     def edit_config(self):
         '''Edits config.json file.'''
-        
+
         if not self.config_exists():
             self.config_create()
             sys.exit()
@@ -107,19 +108,18 @@ class ConfigJSON:
                 sys.exit()
             elif "0" == option:
                 self.change()
-                print("Done.\n")                
+                print("Done.\n")
             elif "1" == option:
                 os.remove(Path(f"{self.dir}/config.json"))
                 self.config_create()
                 sys.exit()
             else:
                 print("Input not valid. \n")
-    
-   
+
     def option_create(self, name):
         '''Creates option to be displayed when change is triggered.'''
 
-        config_path= os.path.join(self.dir, "config.json")
+        config_path = os.path.join(self.dir, "config.json")
         value = getattr(self, name)()
         with open(config_path) as config:
             data = json.load(config)
@@ -127,4 +127,3 @@ class ConfigJSON:
         with open(config_path, "w") as config:
             json.dump(data, config)
         print("\nDone\n")
-
