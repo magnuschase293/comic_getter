@@ -19,7 +19,7 @@ parser.add_argument("-i", "--input",  nargs=1, dest="input",
                     help="Get comic and all of it's issues from main link.")
 parser.add_argument('-c', '--config', action='store_true', dest="config",
                     help='Edit config file.')
-parser.add_argument('-s', "--skip", nargs=1, type=int, default=[0],
+parser.add_argument('-s', "--skip", nargs=1, type=int, default=[""],
                     dest="skip", help='Number of issues to skip.')
 
 args = parser.parse_args()
@@ -38,7 +38,8 @@ if args.input:
     issues_links.reverse()
 
     # Ignore determined links.
-    issues_links = issues_links[args.skip[0]:]
+    if args.skip[0]:
+        issues_links = issues_links[args.skip[0]:]
 
     # Delete already downloaded issues links
     issues_identifiers = [comic.get_comic_and_issue_name(
@@ -52,8 +53,8 @@ if args.input:
             issues_links.remove(link)
 
     # Continue downloading remaining links.
-    print("Issues will be downloaded one by one and a browser will "
-          "be opened for each issue.")
+    print("Issues will be downloaded one by one " 
+        "and a browser will be opened for each issue.")
     time.sleep(2)
     for issue_link in issues_links:
         issue_data = comic.get_pages_links(issue_link)

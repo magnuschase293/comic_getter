@@ -44,7 +44,8 @@ class RCO_Comic:
         driver = webdriver.Chrome(executable_path=self.driver_path)
         driver.set_window_size(1, 1)
         driver.get(self.main_link)
-        # A 60 second margin is given for rowser to bypass cloudflare.
+        # A 60 second margin is given for browser to bypass cloudflare and 
+        #load readcomiconline.to logo.
         wait = WebDriverWait(driver, 60)
         element = wait.until(ec.visibility_of_element_located(
             (By.LINK_TEXT, "ReadComicOnline.to")))
@@ -84,7 +85,7 @@ class RCO_Comic:
         select.select_by_index(1)
         time.sleep(2)
 
-        # An explicit wait is trigger to wait for imgLoader to disappear
+        # An explicit wait is trigger to wait for imgLoader to disappear.
         wait.until(ec.invisibility_of_element((By.ID, "imgLoader")))
         element = driver.find_element_by_id("divImage")
         raw_pages_links = element.get_attribute('innerHTML')
