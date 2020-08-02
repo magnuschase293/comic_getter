@@ -14,8 +14,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
-
-# Pending make skipable issues and consider allowing hq download.
+from selenium.webdriver.chrome.options import Options
 
 
 class RCO_Comic:
@@ -37,15 +36,24 @@ class RCO_Comic:
         self.driver_path = data["chromedriver_path"]
         self.download_directory_path = data["download_dir"]
 
+        if not data.get("visible"):
+            chrome_options = Options()
+            chrome_options.add_argument("--headless")
+            self.options = chrome_options
+        else:
+            chrome_options = Options()
+            self.options = chrome_options
+
     def get_issues_links(self):
         '''Gather all individual issues links from main link.'''
 
         # A chrome window is opened to bypass cloudflare.
-        driver = webdriver.Chrome(executable_path=self.driver_path)
+        driver = webdriver.Chrome(executable_path=self.driver_path,
+                                  options=self.options)
         driver.set_window_size(1, 1)
         driver.get(self.main_link)
-        # A 60 second margin is given for browser to bypass cloudflare and 
-        #load readcomiconline.to logo.
+        # A 60 second margin is given for browser to bypass cloudflare and
+        # load readcomiconline.to logo.
         wait = WebDriverWait(driver, 60)
         element = wait.until(ec.visibility_of_element_located(
             (By.LINK_TEXT, "ReadComicOnline.to")))
@@ -68,7 +76,8 @@ class RCO_Comic:
     def get_pages_links(self, issue_link):
         ''' Gather the links of each page of an issue.'''
 
-        driver = webdriver.Chrome(executable_path=self.driver_path)
+        driver = webdriver.Chrome(executable_path=self.driver_path,
+                                  options=self.options)
         driver.set_window_size(1, 1)
         driver.get(issue_link)
 
@@ -110,8 +119,8 @@ class RCO_Comic:
         generic_comic_name = re.compile(r"(?<=comic/)(.+?)/(.+?)(?=\?)", re.I)
         name_and_issue = re.search(generic_comic_name, issue_link)
 
-        # comic_issue_names[0] is the comic's link name, comic_issue_names[1] 
-        #is the comic name and comic_issue_names[2] is the issues name.
+        # comic_issue_names[0] is the comic's link name, comic_issue_names[1]
+        # is the comic name and comic_issue_names[2] is the issues name.
         comic_issue_name = [issue_link, name_and_issue[1], name_and_issue[2]]
         return comic_issue_name
 

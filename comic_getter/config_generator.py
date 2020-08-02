@@ -3,7 +3,7 @@ import sys
 import json
 from pathlib import Path
 
-
+#Make sure viibility evaluates false by default.
 class ConfigJSON:
     '''Group of all functions that create and modify Config.json .'''
 
@@ -17,11 +17,12 @@ class ConfigJSON:
         while True:
             print("0. Change download dir.")
             print("1. Change chromedriver path.")
-            print("2. Quit\n")
+            print("2. Change visibility.")
+            print("3. Quit\n")
 
             option = input(" >>  ")
             print()
-            if not option or "2" == option:
+            if not option or "3" == option:
                 print("Done.\n")
                 sys.exit()
 
@@ -30,6 +31,9 @@ class ConfigJSON:
 
             elif option == "1":
                 self.option_create("chromedriver_path")
+
+            elif option == "2":
+                self.option_create("visibility")
 
             else:
                 print("Input not valid. \n")
@@ -56,9 +60,11 @@ class ConfigJSON:
         print()
         chromedriver_path = self.chromedriver_path()
         print()
+        visibility = self.visibility()
         data = {
             "download_dir": str(download_dir),
-            "chromedriver_path": str(chromedriver_path)
+            "chromedriver_path": str(chromedriver_path),
+            "visibility": str(visibility)
         }
         with open(config_path, "w") as config:
             json.dump(data, config)
@@ -89,7 +95,7 @@ class ConfigJSON:
                 return download_dir
 
     def edit_config(self):
-        '''Edits config.json file.'''
+        '''Edit config.json file.'''
 
         if not self.config_exists():
             self.config_create()
@@ -117,7 +123,7 @@ class ConfigJSON:
                 print("Input not valid. \n")
 
     def option_create(self, name):
-        '''Creates option to be displayed when change is triggered.'''
+        '''Create option to be displayed when change is triggered.'''
 
         config_path = os.path.join(self.dir, "config.json")
         value = getattr(self, name)()
@@ -127,3 +133,21 @@ class ConfigJSON:
         with open(config_path, "w") as config:
             json.dump(data, config)
         print("\nDone\n")
+
+    def visibility(self):
+        ''' Make user determine if browser opened windows are to be displayed.)
+        '''
+        print("Choose if you want to see the windows opened by the browser."
+            "Answer yes/no. (By default the answer is no)")
+
+        while True:
+            visibility = input(" >>  ")
+            if visibility:
+                if visibility == "yes":
+                    return True
+                elif visibility == "no":
+                    return False                
+                else:
+                    print("Path invalid. Please try again:")
+            else:
+                return 
