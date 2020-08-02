@@ -57,6 +57,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -i INPUT, --input INPUT 
                         Get comic and all of it's issues from main link.
+      --single SINGLE   Get a single issue from a certain comic.
   -c, --config          Edit config file.
   -s SKIP, --skip SKIP  Number of issues to skip.
   ```
@@ -75,12 +76,25 @@ For instance, if all issues of [Joker: Last Laugh](https://readcomiconline.to/Co
 ```bash
 python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Joker-Last-Laugh
 ```
+If not all issues, but a single one is required [Issue-4](https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4?id=45924) there are three very similar ways of doing this. The first escapes the question mark character with a backlash (question mark has a particular behavior in bash/zsh and if not escaped the program won't work). The second relies on link being inside single or double inverted commas, thus terminal/cmd treats it as a string. Lastly, the link can be shortened deleting everything from the question mark to the end and it should also work.
+
+```bash
+python3 path/to/__main__.py --single https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4\?id=45924
+```
+
+```bash
+python3 path/to/__main__.py --single "https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4?id=45924"
+```
+```bash
+python3 path/to/__main__.py --single https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4
+```
 
 If the first 3 issues are not wanted, the -s flag can be used:
 
 ```bash
 python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Joker-Last-Laugh -s 3
 ```
+
 If a change is needed to be done to config.json, the -c flag should be used:
 
 ```bash
@@ -94,6 +108,7 @@ Almost every feature has already been explained, but here is a short list that c
 * Download all issues from a single comic in readcomiconline.to .
 * Skip unwanted comics.
 * Resume download by skipping already downloaded comics. The script considers an issue downloaded when it creates the directory with its name (Notice that if the download is stopped in the middle of an issue being downloaded, you will need to manually delete this last folder in order for the program to re download the issue).
+* Download a single issue of a comic.
 
 ## Troubleshooting
 

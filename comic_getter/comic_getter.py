@@ -19,6 +19,8 @@ parser.add_argument("-i", "--input",  nargs=1, dest="input",
                     help="Get comic and all of it's issues from main link.")
 parser.add_argument('-c', '--config', action='store_true', dest="config",
                     help='Edit config file.')
+parser.add_argument("--single",  nargs=1, dest="single",
+                    help="Get a single issue from a certain comic.")
 parser.add_argument('-s', "--skip", nargs=1, type=int, default=[""],
                     dest="skip", help='Number of issues to skip.')
 
@@ -64,3 +66,11 @@ if args.input:
 
 if args.config:
     ConfigJSON().edit_config()
+
+if args.single:
+    print("Single issue will be downloaded")
+    comic = RCO_Comic(args.single[0])
+    issue_link = args.single[0]
+    issue_data = comic.get_pages_links(issue_link)
+    comic.download_all_pages(issue_data)
+    print("Finished download.")
