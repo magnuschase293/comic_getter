@@ -56,12 +56,8 @@ Only the first 2 digits in version, below the chrome icon, matter.
 optional arguments:
   -h, --help            show this help message and exit
   -i INPUT, --input INPUT 
-                        Get comic and all of it's issues from main link.
-<<<<<<< HEAD
-  --single SINGLE       Get a single issue from a certain comic.
-=======
-      --single SINGLE   Get a single issue from a certain comic from it's link.
->>>>>>> f536b661a8812c6b7149b990717e6356e07b04f9
+                        Get comic and all of its issues from main link.
+  --single SINGLE       Get a single issue from an issue link.
   -c, --config          Edit config file.
   -s SKIP, --skip SKIP  Number of issues to skip.
   ```
