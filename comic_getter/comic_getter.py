@@ -20,7 +20,7 @@ parser.add_argument("-i", "--input",  nargs=1, dest="input",
 parser.add_argument('-c', '--config', action='store_true', dest="config",
                     help='Edit config file.')
 parser.add_argument("--single",  nargs=1, dest="single",
-                    help="Get a single issue from a certain comic.")
+                    help="Get a single issue from a certain comic from it's link.")
 parser.add_argument('-s', "--skip", nargs=1, type=int, default=[""],
                     dest="skip", help='Number of issues to skip.')
 

@@ -57,15 +57,20 @@ optional arguments:
   -h, --help            show this help message and exit
   -i INPUT, --input INPUT 
                         Get comic and all of it's issues from main link.
-      --single SINGLE   Get a single issue from a certain comic.
+<<<<<<< HEAD
+  --single SINGLE       Get a single issue from a certain comic.
+=======
+      --single SINGLE   Get a single issue from a certain comic from it's link.
+>>>>>>> f536b661a8812c6b7149b990717e6356e07b04f9
   -c, --config          Edit config file.
   -s SKIP, --skip SKIP  Number of issues to skip.
   ```
 ### First time around
 The first time comic_getter.py is run it will prompt users to fill certain fields (download directory path and chromedriver path). 
 
-* __Download directory path__ is the location of the directory where comics will be downloaded. By default the comics are downloaded in the CWD.
-* __Chromedriver path__ is the location of the chromedriver. It has no default value and the program will not work if the path is not inputed.
+* __Download directory path__: the location of the directory where comics will be downloaded. By default the comics are downloaded in the CWD.
+* __Chromedriver path__: the location of the chromedriver. It has no default value and the program will not work if the path is not inputed.
+* __Visibility__: The program depends on browser opening windows there is no way to avoid it, but the user may not want to see the windows pop up one by one and that's the aim of this field. By default windows will not be displayed. (It onnly accepts yes/no answer)
 
 ### Examples
 
