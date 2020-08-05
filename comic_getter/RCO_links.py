@@ -36,7 +36,7 @@ class RCO_Comic:
         self.driver_path = data["chromedriver_path"]
         self.download_directory_path = data["download_dir"]
 
-        if not data.get("visible"):
+        if not data.get("visibility"):
             chrome_options = Options()
             chrome_options.add_argument("--headless")
             self.options = chrome_options
