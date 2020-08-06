@@ -66,7 +66,7 @@ The first time comic_getter.py is run it will prompt users to fill certain field
 
 * __Download directory path__: the location of the directory where comics will be downloaded. By default the comics are downloaded in the CWD.
 * __Chromedriver path__: the location of the chromedriver. It has no default value and the program will not work if the path is not inputed.
-* __Visibility__: The program depends on browser opening windows there is no way to avoid it, but the user may not want to see the windows pop up one by one and that's the aim of this field. By default windows will not be displayed. (It onnly accepts yes/no answer)
+* __Visibility__: The program depends on browser opening windows there is no way to avoid it, but the user may not want to see the windows pop up one by one and that's the aim of this field. By default windows will not be displayed (It onnly accepts yes/no answer).
 
 ### Examples
 
@@ -113,7 +113,7 @@ Almost every feature has already been explained, but here is a short list that c
 
 ## Troubleshooting
 
-I have found two bugs after several iterations of the program. The first happened when readcomiconline.to triggered a reCAPTCHA that needs to be bypassed manually either on Google Chrome or the Automated Chrome Tab (the one opened by selenium). After that i simply restarted the script and it continued downloading. A more drastic approach that may work is to change the IP using a VPN after an arbitrary number of downloads, but it has not been tested.
+I have found two bugs after several iterations of the program. The first happened when readcomiconline.to triggered a reCAPTCHA that needs to be bypassed manually either on Google Chrome or the Automated Chrome Tab (the one opened by selenium). After that I simply restarted the script and it continued downloading. A more drastic approach that may work is to change the IP using a VPN after an arbitrary number of downloads, but it has not been tested. If windows aren't visible you'll have to turn visibility on in order to fill the captcha.
 
 The other problem I have encountered with was a 503 Error that I believe happened due to the host (readcomiconline.to) adding a new comic to the site so the server was, for a minute or two, down. After waiting for a while I ran the program and it worked perfectly.
 
