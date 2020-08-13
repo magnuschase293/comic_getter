@@ -66,7 +66,7 @@ The first time comic_getter.py is run it will prompt users to fill certain field
 
 * __Download directory path__: the location of the directory where comics will be downloaded. By default the comics are downloaded in the CWD.
 * __Chromedriver path__: the location of the chromedriver. It has no default value and the program will not work if the path is not inputed.
-* __Visibility__: The program depends on browser opening windows there is no way to avoid it, but the user may not want to see the windows pop up one by one and that's the aim of this field. By default windows will not be displayed (It onnly accepts yes/no answer).
+* __Visibility__: The program depends on browser opening windows there is no way to avoid it, but the user may not want to see the windows pop up one by one and that's the aim of this field. By default windows will not be displayed (It only accepts yes/no answer).
 
 ### Examples
 
