@@ -64,7 +64,7 @@ class ConfigJSON:
         data = {
             "download_dir": str(download_dir),
             "chromedriver_path": str(chromedriver_path),
-            "visibility": str(visibility)
+            "visibility": visibility
         }
         with open(config_path, "w") as config:
             json.dump(data, config)
