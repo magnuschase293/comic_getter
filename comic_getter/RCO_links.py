@@ -16,7 +16,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 
-
 class RCO_Comic:
     '''Collection of functions that allow to download a 
     readcomiconline.to comic with all it's issues.'''
@@ -44,13 +43,38 @@ class RCO_Comic:
             chrome_options = Options()
             self.options = chrome_options
 
+    def download_all_pages(self, issue_data):
+        ''' Download image from link.'''
+
+        download_path = Path(f"{self.download_directory_path}/"
+                             f"{issue_data[1]}/{issue_data[2]}")
+        if not os.path.exists(download_path):
+            os.makedirs(download_path)
+        else:
+            print(f"{issue_data[2]} has already been downloaded.")
+            return
+        print(f"Started downloading {issue_data[2]}")
+
+        # Create progress bar that monitors page download.
+        with tqdm(total=len(issue_data[0])) as pbar:
+            for index, link in enumerate(issue_data[0]):
+
+                # Download image
+                page_path = Path(f"{download_path}/page{index}.jpg")
+                page = requests.get(link, stream=True)
+                with open(page_path, 'wb') as file:
+                    file.write(page.content)
+                pbar.update(1)
+
+        print(f"Finished downloading {issue_data[2]}")
+
     def get_issues_links(self):
         '''Gather all individual issues links from main link.'''
 
         # A chrome window is opened to bypass cloudflare.
         driver = webdriver.Chrome(executable_path=self.driver_path,
                                   options=self.options)
-        driver.set_window_size(1, 1)
+        driver.set_window_size(300, 500)
         driver.get(self.main_link)
         # A 60 second margin is given for browser to bypass cloudflare and
         # load readcomiconline.to logo.
@@ -78,7 +102,7 @@ class RCO_Comic:
 
         driver = webdriver.Chrome(executable_path=self.driver_path,
                                   options=self.options)
-        driver.set_window_size(1, 1)
+        driver.set_window_size(300, 500)
         driver.get(issue_link)
 
         # A 3600 second = 1 hour time gap is given for browser to bypass
@@ -134,28 +158,3 @@ class RCO_Comic:
             return True
         else:
             return False
-
-    def download_all_pages(self, issue_data):
-        ''' Download image from link.'''
-
-        download_path = Path(f"{self.download_directory_path}/"
-                             f"{issue_data[1]}/{issue_data[2]}")
-        if not os.path.exists(download_path):
-            os.makedirs(download_path)
-        else:
-            print(f"{issue_data[2]} has already been downloaded.")
-            return
-        print(f"Started downloading {issue_data[2]}")
-
-        # Create progress bar that monitors page download.
-        with tqdm(total=len(issue_data[0])) as pbar:
-            for index, link in enumerate(issue_data[0]):
-
-                # Download image
-                page_path = Path(f"{download_path}/page{index}.jpg")
-                page = requests.get(link, stream=True)
-                with open(page_path, 'wb') as file:
-                    file.write(page.content)
-                pbar.update(1)
-
-        print(f"Finished downloading {issue_data[2]}")
