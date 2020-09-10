@@ -1,12 +1,13 @@
 ![Untitled](https://user-images.githubusercontent.com/65515378/87181787-4c1e1680-c2b9-11ea-987d-149a645efa6f.png)
 
 # Comic_getter
-Comic_getter is a python script that allows users to download comics from readcomiconline.to. It has been tested on MacOS, but theoretically it should work on every OS.
+Comic_getter is a Command Line Interface (CLI) script written in python that allows users to download comics from readcomiconline.to. It has been tested on MacOS, but theoretically it should work on every OS.
 
 ## Table of Content
 * [Installation](#Installation)
     * [Python 3](#Python-3)
     * [PyPI Dependencies](#PyPI-Dependencies)
+    * [Comic_getter executable](#Comic_getter-executable)
     * [Google Chrome and Chromedriver](#Google-Chrome-and-Chromedriver)
 * [Usage](#Usage)
     * [Command Line Commands](#Command-Line-Commands)
@@ -20,6 +21,8 @@ Comic_getter is a python script that allows users to download comics from readco
 
 ## Installation
 
+There are two options either you proceed to install python and all of the script dependencies or if you are running windows you can unzip comic_getter.zip and execute comic_getter.exe. I recommend the first option because the executable will be updated less often than the actual script. It may take a month or two for script features to reach the executable due to technical difficulties. Further instructions below:
+
 ### Python 3
 
 The script requires python 3.x to run. I leave a link [here](https://www.python.org/downloads/) to the official web page from which one can download the installer.
@@ -32,6 +35,10 @@ Comic_getter depends on several different packages available in PyPI. If python 
 pip3 install -r requirements.txt
 ```
 Is important to have in mind requirements.txt should be replaced with the path to requirements.txt.
+
+### Comic_getter executable
+
+In order to run comic_getter executable you can skip installing Python 3 and the PyPi dependencies. First you will need to download and unzip [comic_getter.zip] (https://github.com/magnuschase293/comic_getter/blob/master/comic_getter.zip) and then you can run comic_getter.exe that is inside. Have in mind comic_getter depends on flags and parameters given through the command line so it won't work if you just double click it. You must run the executable thrrough cmd.
 
 ### Google Chrome and Chromedriver
 
@@ -51,7 +58,7 @@ Only the first 2 digits in version, below the chrome icon, matter.
 
 ## Usage
 
-### Command Line Commands
+### Command Line Arguments
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -61,7 +68,7 @@ optional arguments:
   -c, --config          Edit config file.
   -s SKIP, --skip SKIP  Number of issues to skip.
   ```
-### First time around
+### First Time Around
 The first time comic_getter.py is run it will prompt users to fill certain fields (download directory path and chromedriver path). 
 
 * __Download directory path__: the location of the directory where comics will be downloaded. By default the comics are downloaded in the CWD.
@@ -102,6 +109,15 @@ If a change is needed to be done to config.json, the -c flag should be used:
 python3 path/to/__main__.py -c
 ```
 
+In the ase you are using the executable the examples are almost the same, but replace:
+
+```bash
+python3 path/to/__main__.py 
+```
+with:
+```bash
+path/to/comic_getter.exe 
+```
 ## Features
 
 Almost every feature has already been explained, but here is a short list that compiles them all.
