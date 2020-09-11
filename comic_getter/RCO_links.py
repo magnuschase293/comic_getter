@@ -38,7 +38,10 @@ class RCO_Comic:
         if not data.get("visibility"):
             chrome_options = Options()
             chrome_options.add_argument("--headless")
+            chrome_options.add_experimental_option('excludeSwitches',
+                                                   ['enable-logging'])
             self.options = chrome_options
+
         else:
             chrome_options = Options()
             self.options = chrome_options
