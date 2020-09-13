@@ -70,7 +70,9 @@ class RCO_Comic:
             for index, link in enumerate(issue_data[0]):
 
                 # Download image
-                page_path = Path(f"{issue_path}/page{index}.jpg")
+                number_of_zeroes = len(str(len(issue_data[0])))
+                modified_index = str(index).zfill(number_of_zeroes)
+                page_path = Path(f"{issue_path}/page{modified_index}.jpg") 
                 page = requests.get(link, stream=True)
                 with open(page_path, 'wb') as file:
                     file.write(page.content)

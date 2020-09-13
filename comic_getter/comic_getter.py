@@ -119,4 +119,4 @@ if args.single:
     print("Finished download.")
 
 if args.version:
-    print("\n Version: v1.4.0-alpha\n")
+    print("\n Version: v1.4.1-alpha\n")
