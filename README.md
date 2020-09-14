@@ -15,6 +15,7 @@ Comic_getter is a Command Line Interface (CLI) script written in python that all
     * [Examples](#Examples)
           * [Basic commands](#Basic-commands)
           * [CBZ comic conversion](#CBZ-comic-conversion)
+          * [Dowmload multiple comics at once]
           * [Version](#Version)  
 * [Features](#Features)
 * [Troubleshooting](#Troubleshooting)
@@ -67,12 +68,12 @@ optional arguments:
   -h, --help            show this help message and exit
   -c, --config          Edit config file.
   --cbz                 Convert jpgs to cbz.
-  -i INPUT, --input INPUT
+  -i INPUT [INPUT ...], --input INPUT [INPUT ...]
                         Get comic issues from main link.
   -k, --keep            Keep jpgs after conversion.
   -s SKIP, --skip SKIP  Number of issues to skip.
-  --single SINGLE       Get a single issue from a certain comic from its
-                        link.
+  -x SINGLE [SINGLE ...], --single SINGLE [SINGLE ...]
+                        Get a single issue from a certain comic from its link.
   -v, --version         See current version.
   ```
 ### First Time Around
@@ -92,7 +93,7 @@ For instance, if all issues of [Joker: Last Laugh](https://readcomiconline.to/Co
 ```bash
 python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Joker-Last-Laugh
 ```
-If not all issues, but a single one is required [Issue-4](https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4?id=45924) there are three very similar ways of doing this. The first escapes the question mark character with a backlash (question mark has a particular behavior in bash/zsh and if not escaped the program won't work). The second relies on link being inside single or double inverted commas, thus terminal/cmd treats it as a string. Lastly, the link can be shortened deleting everything from the question mark to the end and it should also work.
+If not all issues, but a single one is required [Issue-4](https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4?id=45924) there are three very similar ways of doing this. The first escapes the question mark character with a backlash (question mark has a particular behavior in bash/zsh and if not escaped the program won't work). The second relies on link being inside single or double inverted commas, thus terminal/cmd treats it as a string. Lastly, the link can be shortened deleting everything from the question mark to the end and it should also work. In each of them --single can be replaced with -x without any problems.
 
 ```bash
 python3 path/to/__main__.py --single https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4\?id=45924
@@ -100,6 +101,10 @@ python3 path/to/__main__.py --single https://readcomiconline.to/Comic/Joker-Last
 
 ```bash
 python3 path/to/__main__.py --single "https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4?id=45924"
+```
+
+```bash
+python3 path/to/__main__.py --single "https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4"
 ```
 
 If the first 3 issues are not wanted, the -s flag can be used:
@@ -134,6 +139,16 @@ Using once again [Joker: Last Laugh](https://readcomiconline.to/Comic/Joker-Last
 python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Joker-Last-Laugh --cbz -k
 ```
 
+#### Download several comics or issues at the same time
+
+The -i and --single flags allow for several comics/issues to be inputed at once. For instance if the user wants to download [Joker: Last Laugh issue-4](https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4) and [Iron Squad Issue 5](https://readcomiconline.to/Comic/Iron-Squad/Issue-5) he can do the following:
+
+```bash
+python3 path/to/__main__.py --single https://readcomiconline.to/Comic/Joker-Last-Laugh/Issue-4 https://readcomiconline.to/Comic/Iron-Squad/Issue-5 --cbz
+```
+
+Have in mind --cbz and -k flags will affect both comics/issues in such scenario.
+
 #### Version
 
 The -v flag was implemented in order for you to quickly check what version of the program you have:
@@ -151,6 +166,7 @@ Almost every feature has already been explained, but here is a short list that c
 * Resume download by skipping already downloaded comics. The script considers an issue downloaded when it creates the directory with its name (Notice that if the download is stopped in the middle of an issue being downloaded, you will need to manually delete this last folder in order for the program to re download the issue).
 * Download a single issue of a comic.
 * Convert downloaded comics to cbz file format.
+* Download multiple comics and issues at once.
 
 ## Troubleshooting
 
