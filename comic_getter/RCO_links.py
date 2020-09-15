@@ -35,6 +35,7 @@ class RCO_Comic:
 
         self.driver_path = data["chromedriver_path"]
         self.download_dir_path = data["download_dir"]
+        self.quality = data["quality"]
 
         if not data.get("visibility"):
             chrome_options = Options()
@@ -125,10 +126,19 @@ class RCO_Comic:
             (By.LINK_TEXT, "ReadComicOnline.to")))
 
         # An option to load all pages of the issue in the same tab is selected.
-        select = Select(driver.find_element_by_id('selectReadType'))
-        select.select_by_index(1)
-        time.sleep(2)
+        read_type = Select(driver.find_element_by_id('selectReadType'))
+        read_type.select_by_index(1)
+        time.sleep(1)
 
+        #According to config.json the quality of the issue is selected.
+        select_quality = Select(driver.find_element_by_id('selectQuality'))
+        quality = self.quality
+        try:
+            select_quality.select_by_value(quality)
+        except:
+            pass
+        time.sleep(1)
+            
         # An explicit wait is trigger to wait for imgLoader to disappear.
         wait.until(ec.invisibility_of_element((By.ID, "imgLoader")))
         element = driver.find_element_by_id("divImage")

@@ -42,7 +42,7 @@ Is important to have in mind requirements.txt should be replaced with the path t
 
 ### Comic_getter executable
 
-In order to run comic_getter executable you can skip installing Python 3 and the PyPi dependencies. First you will need to download and unzip [comic_getter.zip] (https://github.com/magnuschase293/comic_getter/blob/master/comic_getter.zip) and then you can run comic_getter.exe that is inside. Have in mind comic_getter depends on flags and parameters given through the command line so it won't work if you just double click it. You must run the executable through cmd.
+In order to run comic_getter executable you can skip installing Python 3 and the PyPi dependencies. First you will need to download and unzip [comic_getter.zip](https://github.com/magnuschase293/comic_getter/blob/master/comic_getter.zip) and then you can run comic_getter.exe that is inside. Have in mind comic_getter depends on flags and parameters given through the command line so it won't work if you just double click it. You must run the executable through cmd.
 
 ### Google Chrome and Chromedriver
 
@@ -81,7 +81,8 @@ The first time comic_getter.py is run it will prompt users to fill certain field
 
 * __Download directory path__: the location of the directory where comics will be downloaded. By default the comics are downloaded in the CWD.
 * __Chromedriver path__: the location of the chromedriver. It has no default value and the program will not work if the path is not inputed.
-* __Visibility__: The program depends on browser opening windows there is no way to avoid it, but the user may not want to see the windows pop up one by one and that's the aim of this field. By default windows will not be displayed (It only accepts yes/no answer).
+* __Visibility__: the program depends on browser opening windows there is no way to avoid it, but the user may not want to see the windows pop up one by one and that's the aim of this field. By default windows will not be displayed (It only accepts yes/no answer).
+* __Quality__: the script allows users to choose the quality of comics based on RCO options high quality or low quality.
 
 ### Examples
 
@@ -161,12 +162,13 @@ python3 path/to/__main__.py -v
 
 Almost every feature has already been explained, but here is a short list that compiles them all.
 
-* Download all issues from a single comic in readcomiconline.to .
-* Skip unwanted comics.
-* Resume download by skipping already downloaded comics. The script considers an issue downloaded when it creates the directory with its name (Notice that if the download is stopped in the middle of an issue being downloaded, you will need to manually delete this last folder in order for the program to re download the issue).
-* Download a single issue of a comic.
+* Choose between high and low quality.
 * Convert downloaded comics to cbz file format.
+* Download a single issue of a comic.
+* Download all issues from a single comic in readcomiconline.to .
 * Download multiple comics and issues at once.
+* Resume download by skipping already downloaded comics. The script considers an issue downloaded when it creates the directory with its name (Notice that if the download is stopped in the middle of an issue being downloaded, you will need to manually delete this last folder in order for the program to re download the issue).
+* Skip unwanted comics.
 
 ## Troubleshooting
 

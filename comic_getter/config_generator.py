@@ -18,11 +18,12 @@ class ConfigJSON:
             print("0. Change download dir.")
             print("1. Change chromedriver path.")
             print("2. Change visibility.")
-            print("3. Quit\n")
+            print("3. Change quality")
+            print("4. Quit\n")
 
             option = input(" >>  ")
             print()
-            if not option or "3" == option:
+            if not option or "4" == option:
                 print("Done.\n")
                 sys.exit()
 
@@ -35,6 +36,8 @@ class ConfigJSON:
             elif option == "2":
                 self.option_create("visibility")
 
+            elif option == "3":
+                self.option_create("quality")
             else:
                 print("Input not valid. \n")
 
@@ -61,10 +64,13 @@ class ConfigJSON:
         chromedriver_path = self.chromedriver_path()
         print()
         visibility = self.visibility()
+        print()
+        quality = self.quality()
         data = {
             "download_dir": str(download_dir),
             "chromedriver_path": str(chromedriver_path),
-            "visibility": visibility
+            "visibility": visibility,
+            "quality": quality
         }
         with open(config_path, "w") as config:
             json.dump(data, config)
@@ -148,6 +154,24 @@ class ConfigJSON:
                 elif visibility == "no":
                     return False                
                 else:
-                    print("Path invalid. Please try again:")
+                    print("Answer isn't yes or no please try again:")
             else:
                 return 
+
+    def quality(self):
+        '''Allow user to select quality of issues downloaded.'''
+        print("Choose quality of comics to be downloaded. Answer hq for high" 
+        "quality and lq for low quality. (By default comics are dwnloaded in" 
+        "high quality) ")
+
+        while True:
+            quality = input(" >>  ")
+            if quality:
+                if quality.lower() == "hq":
+                    return "hq"
+                elif quality.lower() == "lq":
+                    return "lq"                
+                else:
+                    print("Answer isn't hq or lq please try again:")
+            else:
+                return "hq"
