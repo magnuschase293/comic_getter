@@ -161,7 +161,7 @@ class ConfigJSON:
     def quality(self):
         '''Allow user to select quality of issues downloaded.'''
         print("Choose quality of comics to be downloaded. Answer hq for high" 
-        "quality and lq for low quality. (By default comics are dwnloaded in" 
+        " quality and lq for low quality. (By default comics are downloaded in" 
         "high quality) ")
 
         while True:
