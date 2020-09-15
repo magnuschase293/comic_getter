@@ -1,7 +1,7 @@
 <img src="https://user-images.githubusercontent.com/65515378/93205017-78c53300-f72d-11ea-9cc2-8a3e252c10b1.jpg"  height="263" />
 
 # Comic_getter
-Comic_getter is a Command Line Interface (CLI) script written in python that allows users to download comics from readcomiconline.to. It has been tested on MacOS, but theoretically it should work on every OS.
+Comic_getter is a Command Line Interface (CLI) script written in python that allows users to download comics from readcomiconline.to. It has been tested on MacOS Catalina and Windows 10, but theoretically it should work on every OS.
 
 ## Table of Content
 * [Installation](#Installation)
@@ -13,10 +13,10 @@ Comic_getter is a Command Line Interface (CLI) script written in python that all
     * [Command Line Commands](#Command-Line-Commands)
     * [First time around](#First-time-around)
     * [Examples](#Examples)
-          * [Basic commands](#Basic-commands)
-          * [CBZ comic conversion](#CBZ-comic-conversion)
-          * [Dowmload multiple comics at once]
-          * [Version](#Version)  
+      * [Basic commands](#Basic-commands)
+      * [CBZ comic conversion](#CBZ-comic-conversion)
+      * [Download several comics or issues](#Download-several-comics-or-issues-at-the-same-time)
+      * [Version](#Version)  
 * [Features](#Features)
 * [Troubleshooting](#Troubleshooting)
 * [Issues and Suggestions](#Issues-and-Sugestions)
