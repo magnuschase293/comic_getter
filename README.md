@@ -1,4 +1,4 @@
-![Untitled](https://user-images.githubusercontent.com/65515378/87181787-4c1e1680-c2b9-11ea-987d-149a645efa6f.png)
+<img src="https://user-images.githubusercontent.com/65515378/93205017-78c53300-f72d-11ea-9cc2-8a3e252c10b1.jpg"  height="263" />
 
 # Comic_getter
 Comic_getter is a Command Line Interface (CLI) script written in python that allows users to download comics from readcomiconline.to. It has been tested on MacOS, but theoretically it should work on every OS.
