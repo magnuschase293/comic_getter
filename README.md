@@ -65,12 +65,18 @@ Only the first 2 digits in version, below the chrome icon, matter.
 ### Command Line Arguments
 ```bash
 optional arguments:
+optional arguments:
   -h, --help            show this help message and exit
   -c, --config          Edit config file.
   --cbz                 Convert jpgs to cbz.
   -i INPUT [INPUT ...], --input INPUT [INPUT ...]
                         Get comic issues from main link.
   -k, --keep            Keep jpgs after conversion.
+  -r RANGE RANGE, --range RANGE RANGE
+                        Start and ending regex to download.
+  --rt RANGET RANGET RANGET, --ranget RANGET RANGET RANGET
+                        Same as -r, but with a third argument that allows user
+                        to increase time limit.
   -s SKIP, --skip SKIP  Number of issues to skip.
   -x SINGLE [SINGLE ...], --single SINGLE [SINGLE ...]
                         Get a single issue from a certain comic from its link.
@@ -150,6 +156,22 @@ python3 path/to/__main__.py --single https://readcomiconline.to/Comic/Joker-Last
 
 Have in mind --cbz and -k flags will affect both comics/issues in such scenario.
 
+#### Range
+
+The -r and --rt flags allow users to select a range of issues to be downloaded. The first two arguments of -r and --rt are the start and ending regular expression patterns, respectively. The script looks for this patterns in the list of issues present at the main link. Have in mind capital letters are ignored, but otherwise the patterns must be an exact match. The larger the pattern the more chances it won't repeat and it will determine the range correctly. 
+
+In order for users to have a better experience once they get used to RCO issues naming system I decided to reverse the order in which arguments need to be introduced. Let me explain this a little bit better. 
+
+If the user wants to download [Wolverine (1988)](https://readcomiconline.to/Comic/Wolverine-1988) issue #2 to issue #12 in RCO he would find the following list:
+
+By inputing the following code the issues will be downloaded:
+```bash
+python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Wolverine-1988 -r "issue #2" "issue #12"
+```
+Notice the inverted commas are added for the command line to consider each pattern a single string and ignore any spaces or special characters in the patterns.
+
+Both -r and --rt are really similar the only difference lies in the fact that --rt has an extra argument to expand the 30 seconds timeout for re module to find the start and ending pattern.
+
 #### Version
 
 The -v flag was implemented in order for you to quickly check what version of the program you have:
@@ -167,6 +189,7 @@ Almost every feature has already been explained, but here is a short list that c
 * Download a single issue of a comic.
 * Download all issues from a single comic in readcomiconline.to .
 * Download multiple comics and issues at once.
+* Range select issues through start and ending arguments.
 * Resume download by skipping already downloaded comics. The script considers an issue downloaded when it creates the directory with its name (Notice that if the download is stopped in the middle of an issue being downloaded, you will need to manually delete this last folder in order for the program to re download the issue).
 * Skip unwanted comics.
 
