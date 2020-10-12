@@ -16,6 +16,7 @@ Comic_getter is a Command Line Interface (CLI) script written in python that all
       * [Basic commands](#Basic-commands)
       * [CBZ comic conversion](#CBZ-comic-conversion)
       * [Download several comics or issues](#Download-several-comics-or-issues-at-the-same-time)
+      * [Range selection](#Range-selection)
       * [Version](#Version)  
 * [Features](#Features)
 * [Troubleshooting](#Troubleshooting)
@@ -156,13 +157,14 @@ python3 path/to/__main__.py --single https://readcomiconline.to/Comic/Joker-Last
 
 Have in mind --cbz and -k flags will affect both comics/issues in such scenario.
 
-#### Range
+#### Range selection
 
 The -r and --rt flags allow users to select a range of issues to be downloaded. The first two arguments of -r and --rt are the start and ending regular expression patterns, respectively. The script looks for this patterns in the list of issues present at the main link. Have in mind capital letters are ignored, but otherwise the patterns must be an exact match. The larger the pattern the more chances it won't repeat and it will determine the range correctly. 
 
 In order for users to have a better experience once they get used to RCO issues naming system I decided to reverse the order in which arguments need to be introduced. Let me explain this a little bit better. 
 
 If the user wants to download [Wolverine (1988)](https://readcomiconline.to/Comic/Wolverine-1988) issue #2 to issue #12 in RCO he would find the following list:
+<img width="748" alt="Screen Shot 2020-10-12 at 16 05 18" src="https://user-images.githubusercontent.com/65515378/95784804-e6bc3600-0caa-11eb-8092-40805f563978.png">
 
 By inputing the following code the issues will be downloaded:
 ```bash
