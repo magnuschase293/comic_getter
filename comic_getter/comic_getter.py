@@ -72,8 +72,8 @@ if __name__ == '__main__':
             t1.start()
             time.sleep(1)
 
-            comic = RCO_Comic()
-            raw_links_list = comic.get_raw_links_list(link)
+            comic = RCO_Comic(link)
+            raw_links_list = comic.get_raw_links_list()
 
             # Range selection
             if args.range:
@@ -125,28 +125,38 @@ if __name__ == '__main__':
             # Ignore skipped links.
             if args.skip[0]:
                 partial_issues_links = partial_issues_links[args.skip[0]:]
-            # Ignore already downloaded issues links
-            issues_ids = [comic.get_comic_and_issue_name(
-                link, raw_links_list) for link in partial_issues_links]
 
-            downloaded_issues = [issue_id for issue_id in issues_ids
-                                 if comic.is_comic_downloaded(issue_id)]
+            # Ignore already downloaded issues links
+            #Issues_names contains tuples contain, 
+            #comic_and_issue_name of every issue in the comic.
+            issues_names= [comic.get_comic_and_issue_name(
+                link) for link in partial_issues_links]
+
+            downloaded_issues = [issue_name for issue_name in issues_names
+                                 if comic.is_comic_downloaded(issue_name)]
 
             links_fetcher = operator.itemgetter(0)
             downloaded_issues_links = [links_fetcher(
                 issue) for issue in downloaded_issues]
-            for link in partial_issues_links[:]:
-                if link in downloaded_issues_links:
-                    partial_issues_links.remove(link)
+            for issue_name in issues_names[:]:
+                if issue_name[0] in downloaded_issues_links:
+                    issues_names.remove(issue_name)
             stop_animation = True
+            print("All issues links were gathered.")
             time.sleep(1)
-            print()
+
             # Continue downloading remaining links.
-            for issue_link in partial_issues_links:
+            for issue_name in issues_names:
                 stop_animation = False
                 t2 = threading.Thread(target=animation, args=["Loading"])
                 t2.start()
-                issue_data = comic.get_pages_links(issue_link, raw_links_list)
+
+                pages_links = comic.get_pages_links(issue_name[0])
+                #Pages links, comic name and issue name are packed inside issue_data
+                # tuple.
+                issue_data = (pages_links, issue_name[1], issue_name[2])
+                print(f"All links to pages of {issue_data[2]} were gathered.")
+
                 stop_animation = True
                 comic.issue_dir(issue_data)
                 comic.download_all_pages(issue_data)
@@ -166,17 +176,12 @@ if __name__ == '__main__':
         print("Individual issues will be downloaded.")
         for issue_link in args.single:
             # Allow single comic issue to be downloaded.
-            core_link = "https://readcomiconline.to"
-            partial_link = issue_link.replace(core_link, "")
-            comic = RCO_Comic()
-            main_link = comic.main_link(issue_link)
-            raw_links_list = comic.get_raw_links_list(main_link)
-            issue_name = comic.get_comic_and_issue_name(partial_link,
-                                                        raw_links_list)
-
+            comic = RCO_Comic(issue_link)
+            issue_name= comic.get_comic_and_issue_name()
+ 
             if not comic.is_comic_downloaded(issue_name):
-                issue_data = comic.get_pages_links(
-                    partial_link, raw_links_list)
+                pages_links = comic.get_pages_links()
+                issue_data = (pages_links, issue_name[1], issue_name[2])
                 comic.issue_dir(issue_data)
                 comic.download_all_pages(issue_data)
             else:
@@ -189,4 +194,4 @@ if __name__ == '__main__':
         print("Finished download.")
 
     if args.version:
-        print("\n Version: v1.7.1-alpha\n")
+        print("\n Version: v1.0.0\n")

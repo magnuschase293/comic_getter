@@ -20,9 +20,9 @@ from selenium.webdriver.chrome.options import Options
 
 class RCO_Comic:
     '''Collection of functions that allow to download a 
-    readcomiconline.to comic with all it's issues.'''
+    readcomiconline comic with all it's issues.'''
 
-    def __init__(self):
+    def __init__(self, link):
         '''Initializes main_link attribute. '''
 
         # Extract data from config.json
@@ -31,6 +31,11 @@ class RCO_Comic:
         with open(dir_path) as config:
             data = json.load(config)
 
+        self.full_link = link
+        self.domain = self.get_domain()
+        self.main_link = self.get_main_link()
+        
+        #Config.json settings.
         self.driver_path = data["chromedriver_path"]
         self.download_dir_path = data["download_dir"]
         self.quality = data["quality"]
@@ -78,18 +83,59 @@ class RCO_Comic:
 
         print(f"Finished downloading {issue_data[2]}")
 
-    def get_raw_links_list(self, main_link):
+    def get_domain(self):
+        '''Use regular expressions to extract domain from url.'''
+        pattern = r"(https://|http://)(.+?)(?=/)"
+        match = re.search(pattern,self.full_link)
+        if match is None:
+            print("Not a valid link.")
+        else:
+            domain = match[0]
+
+        return domain
+
+    def get_comic_and_issue_name(self, partial_link=None):
+        '''Returns comic name and issue's name.'''
+
+        if partial_link is None:
+            partial_link = self.full_link.replace(self.domain,"") 
+
+        driver = webdriver.Chrome(executable_path=self.driver_path,
+                                  options=self.options)
+        driver.get(self.main_link)
+        # A 60 second margin is given for browser to bypass cloudflare and
+        # load readcomiconline logo.
+        wait = WebDriverWait(driver, 60)
+        logo = wait.until(ec.visibility_of_element_located(
+            (By.CSS_SELECTOR, "a[title='ReadComicOnline - Read high quality comic online']")))
+        time.sleep(0.5)
+
+        comic_name = driver.find_element_by_css_selector(".bigChar").text 
+        issue_name=driver.find_element_by_css_selector(f"a[href='{partial_link}']").text
+
+        driver.quit()
+
+        #Fix possible : and / in comic name and issue_name.
+        comic_name = comic_name.replace(u":", "\u2236")
+        comic_name = comic_name.replace(u"/", "\u2215")
+        issue_name = issue_name.replace(u":", "\u2236")
+        issue_name = issue_name.replace(u"/", "\u2215")
+
+        return [partial_link, comic_name, issue_name]
+
+    def get_raw_links_list(self):
         '''Gathers the html code of the main link.'''
-        # A chrome window is opened to bypass cloudflare.
+
         driver = webdriver.Chrome(executable_path=self.driver_path,
                                   options=self.options)
         driver.set_window_size(300, 500)
-        driver.get(main_link)
+
+        driver.get(self.main_link)
         # A 60 second margin is given for browser to bypass cloudflare and
-        # load readcomiconline.to logo.
+        # load readcomiconline logo.
         wait = WebDriverWait(driver, 60)
         element = wait.until(ec.visibility_of_element_located(
-            (By.LINK_TEXT, "ReadComicOnline.to")))
+            (By.CSS_SELECTOR, "a[title='ReadComicOnline - Read high quality comic online']")))
         time.sleep(0.5)
 
         # The whole html code is downloaded.
@@ -104,57 +150,23 @@ class RCO_Comic:
         generic_link = re.compile(r'(?<=")/Comic/.+?id=\d+(?=")', re.I)
         target_links = re.findall(generic_link, raw_links_list)
         partial_issues_links = [partial_link for partial_link in target_links]
-        print("All issues links were gathered.")
         return partial_issues_links
 
-    def complete_issues_links(self, partial_issues_links):
-        '''Add core link to partial links'''
-        core_link = "https://readcomiconline.to"
-        issues_links = []
-        for link in partial_issues_links:
-            full_link = core_link + link
-            issues_links.append(full_link)
-        return issues_links
+    def get_main_link(self):
+        '''Returns main link from full link.'''
 
-    def get_comic_and_issue_name(self, partial_issue_link, raw_links_list):
-        '''Finds out comic and issue name from partial_link and main_link.'''
-
-        # Re module is used to get issue and comic name.
-        # The comic name is extracted from the link.
-        generic_comic_name = re.compile(r"(?<=comic/)(.+?)/(.+?)(?=\?|$)",
-                                        re.I)
-        comic_name_regex = re.search(generic_comic_name, partial_issue_link)
-        comic_name = comic_name_regex.group(1)
-
-        # The issue name is extracted from the raw_links_list.
-        link = re.escape(partial_issue_link)
-        generic_comic_name = re.compile(
-            rf"<.+{link}.+>\s(?P<title>.+?)(<|$)", re.I | re.M)
-        issue_name_regex = re.search(generic_comic_name, str(raw_links_list))
-        issue_name = issue_name_regex.group("title").strip()
-
-        # Fix presence of forward slash in issue name on mac and linux.
-        if (platform.system() == "Darwin") | (platform.system() == "Linux"):
-            issue_name = issue_name.replace("/", ":")
-
-        # comic_issue_names[0] is the issue link, comic_issue_names[1]
-        # is the comic name and comic_issue_names[2] is the issue name.
-        comic_issue_name = [partial_issue_link, comic_name, issue_name]
-        return comic_issue_name
-
-    def main_link(self, issue_link):
-        '''Returns main link from issue link.'''
-
-        generic_main_link = re.compile(r"https://.+?/.+/.+/", re.I)
-        main_link_regex = re.search(generic_main_link, issue_link)
-        main_link = main_link_regex.group(0)
+        generic_main_link = re.compile(r"(https://|http://)(.+?/.+?/.+?)(?=/|$)", re.I)
+        main_link_regex = re.search(generic_main_link, self.full_link)
+        main_link = main_link_regex[0]
         return main_link
 
-    def get_pages_links(self, partial_link, raw_links_list):
+    def get_pages_links(self, partial_link=None):
         ''' Gather the links of each page of an issue.'''
         # The partial link is completed
-        core_link = "https://readcomiconline.to"
-        issue_link = core_link + partial_link
+        if partial_link is not None:
+            issue_link = self.domain + partial_link
+        else:
+            issue_link = self.full_link
 
         driver = webdriver.Chrome(executable_path=self.driver_path,
                                   options=self.options)
@@ -167,7 +179,7 @@ class RCO_Comic:
         # and as soon as these events happen the program will continue.
         wait = WebDriverWait(driver, 3600)
         wait.until(ec.visibility_of_element_located(
-            (By.LINK_TEXT, "ReadComicOnline.to")))
+            (By.CSS_SELECTOR, "a[title='ReadComicOnline - Read high quality comic online']")))
 
         # An option to load all pages of the issue in the same tab is selected.
         read_type = Select(driver.find_element_by_id('selectReadType'))
@@ -194,13 +206,7 @@ class RCO_Comic:
             r'(?<=")https://2.bp.blogspot.com/.+?(?=")', re.I)
         pages_links = re.findall(generic_page_link, raw_pages_links)
 
-        # Pages links, comic name and issue name are packed inside issue_data
-        # tuple.
-        comic_issue_name = self.get_comic_and_issue_name(
-            partial_link, raw_links_list)
-        issue_data = (pages_links, comic_issue_name[1], comic_issue_name[2])
-        print(f"All links to pages of {issue_data[2]} were gathered.")
-        return issue_data
+        return pages_links
 
     def is_comic_downloaded(self, comic_issue_name):
         '''Checks if comic has already been downloaded.'''
@@ -210,13 +216,12 @@ class RCO_Comic:
         cbz_path = Path(f"{self.download_dir_path}/{comic_issue_name[1]}"
                         f"/{comic_issue_name[2]}.cbz")
 
+        issue = comic_issue_name[2]
+
         if download_path.exists():
-            issue = comic_issue_name[2].replace(":", "/")
             print(f"{issue} has already been downloaded.")
             return True
         elif cbz_path.exists():
-            issue = comic_issue_name[2].replace(":", "/")
-            issue = comic_issue_name[2]
             print(f"{issue} has already been downloaded.")
             return True
         else:
