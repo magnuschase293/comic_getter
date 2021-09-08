@@ -127,10 +127,14 @@ if __name__ == '__main__':
                 partial_issues_links = partial_issues_links[args.skip[0]:]
 
             # Ignore already downloaded issues links
-            #Issues_names contains tuples contain, 
-            #comic_and_issue_name of every issue in the comic.
-            issues_names= [comic.get_comic_and_issue_name(
-                link) for link in partial_issues_links]
+
+            issues_names= []
+            driver = None
+            for link in partial_issues_links:
+                issue_name,driver =comic.get_comic_and_issue_name(
+                link,driver)
+                issues_names.append(issue_name)
+            driver.quit()
 
             downloaded_issues = [issue_name for issue_name in issues_names
                                  if comic.is_comic_downloaded(issue_name)]
@@ -194,4 +198,4 @@ if __name__ == '__main__':
         print("Finished download.")
 
     if args.version:
-        print("\n Version: v1.0.0\n")
+        print("\n Version: v1.0.1\n")

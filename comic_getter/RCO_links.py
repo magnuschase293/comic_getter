@@ -17,7 +17,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 
-
+# When making exe replace os.path.dirname(os.path.abspath(__file__)) 
+# with  os.path.dirname(sys.executable) here and in config_generator.py
+# and import sys.
 class RCO_Comic:
     '''Collection of functions that allow to download a 
     readcomiconline comic with all it's issues.'''
@@ -26,6 +28,7 @@ class RCO_Comic:
         '''Initializes main_link attribute. '''
 
         # Extract data from config.json
+
         dir_path = Path(f"{os.path.dirname(os.path.abspath(__file__))}"
                         "/config.json")
         with open(dir_path) as config:
@@ -48,6 +51,8 @@ class RCO_Comic:
             self.options = chrome_options
         else:
             chrome_options = Options()
+            chrome_options.add_experimental_option('excludeSwitches',
+                                                   ['enable-logging'])
             self.options = chrome_options
 
     def convert_to_cbz(self, issue_data):
@@ -94,34 +99,32 @@ class RCO_Comic:
 
         return domain
 
-    def get_comic_and_issue_name(self, partial_link=None):
+ def get_comic_and_issue_name(self, partial_link=None, driver=None):
         '''Returns comic name and issue's name.'''
 
         if partial_link is None:
             partial_link = self.full_link.replace(self.domain,"") 
-
-        driver = webdriver.Chrome(executable_path=self.driver_path,
-                                  options=self.options)
-        driver.get(self.main_link)
-        # A 60 second margin is given for browser to bypass cloudflare and
-        # load readcomiconline logo.
-        wait = WebDriverWait(driver, 60)
-        logo = wait.until(ec.visibility_of_element_located(
-            (By.CSS_SELECTOR, "a[title='ReadComicOnline - Read high quality comic online']")))
-        time.sleep(0.5)
+        if driver is None:
+            driver = webdriver.Chrome(executable_path=self.driver_path,
+                                      options=self.options)
+            driver.get(self.main_link)
+            # A 60 second margin is given for browser to bypass cloudflare and
+            # load readcomiconline logo.
+            wait = WebDriverWait(driver, 60)
+            logo = wait.until(ec.visibility_of_element_located(
+                (By.CSS_SELECTOR, "a[title='ReadComicOnline - Read high quality comic online']")))
+            time.sleep(0.5)
 
         comic_name = driver.find_element_by_css_selector(".bigChar").text 
         issue_name=driver.find_element_by_css_selector(f"a[href='{partial_link}']").text
 
-        driver.quit()
-
-        #Fix possible : and / in comic name and issue_name.
+        #Fix possible : and / in comic_name and issue_name.
         comic_name = comic_name.replace(u":", "\u2236")
         comic_name = comic_name.replace(u"/", "\u2215")
         issue_name = issue_name.replace(u":", "\u2236")
         issue_name = issue_name.replace(u"/", "\u2215")
 
-        return [partial_link, comic_name, issue_name]
+        return [partial_link, comic_name, issue_name], driver
 
     def get_raw_links_list(self):
         '''Gathers the html code of the main link.'''

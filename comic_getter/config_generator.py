@@ -9,6 +9,7 @@ class ConfigJSON:
 
     def __init__(self):
         '''Initialize main dir path used in several methods.'''
+        #For making exe replace with self.dir = os.path.dirname(sys.executable)
         self.dir = os.path.dirname(os.path.abspath(__file__))
 
     def change(self):
@@ -78,8 +79,7 @@ class ConfigJSON:
 
     def config_exists(self):
         '''Check if movies_list.json exists.'''
-        main_path = os.path.dirname(os.path.abspath(__file__))
-        config_path = os.path.join(main_path, "config.json")
+        config_path = os.path.join(self.dir, "config.json")
         return os.access(config_path, os.R_OK)
 
     def download_dir(self):
@@ -175,3 +175,5 @@ class ConfigJSON:
                     print("Answer isn't hq or lq please try again:")
             else:
                 return "hq"
+
+
