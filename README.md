@@ -43,7 +43,7 @@ Is important to have in mind requirements.txt should be replaced with the path t
 
 ### Comic_getter executable
 
-In order to run comic_getter executable you can skip installing Python 3 and the PyPi dependencies. First you will need to download and unzip [comic_getter.zip](https://github.com/magnuschase293/comic_getter/blob/master/comic_getter.zip) and then you can run comic_getter.exe that is inside. Have in mind comic_getter depends on flags and parameters given through the command line so it won't work if you just double click it. You must run the executable through cmd.
+In order to run comic_getter executable you can skip installing Python 3 and the PyPi dependencies. You will only need to download [comic_getter.exe](https://github.com/magnuschase293/comic_getter/releases/tag/v1.0.1). Have in mind comic_getter depends on flags and parameters given through the command line so it won't work if you just double click it the excutable must be run through the cmd.
 
 ### Google Chrome and Chromedriver
 
