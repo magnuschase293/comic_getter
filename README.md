@@ -1,13 +1,13 @@
 <img src="https://user-images.githubusercontent.com/65515378/93205017-78c53300-f72d-11ea-9cc2-8a3e252c10b1.jpg"  height="263" />
 
-# Comic_getter
-Comic_getter is a Command Line Interface (CLI) script written in python that allows users to download comics from readcomiconline.to. It has been tested on MacOS Catalina and Windows 10, but theoretically it should work on every OS.
+# Comic Getter
+Comic Getter is a Command Line Interface (CLI) script written in python that allows users to download comics from readcomiconline.to. It has been tested on MacOS Catalina and Windows 10, but theoretically it should work on every OS.
 
 ## Table of Content
 * [Installation](#Installation)
     * [Python 3](#Python-3)
     * [PyPI Dependencies](#PyPI-Dependencies)
-    * [Comic_getter executable](#Comic_getter-executable)
+    * [Comic Getter executable](#Comic-Getter-executable)
     * [Google Chrome and Chromedriver](#Google-Chrome-and-Chromedriver)
 * [Usage](#Usage)
     * [Command Line Commands](#Command-Line-Commands)
@@ -26,7 +26,7 @@ Comic_getter is a Command Line Interface (CLI) script written in python that all
 
 ## Installation
 
-There are two options either you proceed to install python and all of the script dependencies or if you are running windows you can unzip comic_getter.zip and execute comic_getter.exe. I recommend the first option because the executable will be updated less often than the actual script. It may take a month or two for script features to reach the executable due to technical difficulties. Further instructions below:
+There are two options either you proceed to install python and all of the script dependencies or if you are running windows you can download and execute comic_getter.exe. I recommend the first option because the executable will be updated less often than the actual script. Further instructions below:
 
 ### Python 3
 
@@ -34,20 +34,20 @@ The script requires python 3.x to run. I leave a link [here](https://www.python.
 
 ### PyPI Dependencies
 
-Comic_getter depends on several different packages available in PyPI. If python 3 is already installed, one can simply use the package manager pip3 to install all the dependencies listed.
+Comic Getter depends on several different packages available in PyPI. If python 3 is already installed, one can simply use the package manager pip3 to install all the dependencies listed.
 
 ```bash
 pip3 install -r requirements.txt
 ```
 Is important to have in mind requirements.txt should be replaced with the path to requirements.txt.
 
-### Comic_getter executable
+### Comic Getter executable
 
-In order to run comic_getter executable you can skip installing Python 3 and the PyPi dependencies. You will only need to download [comic_getter.exe](https://github.com/magnuschase293/comic_getter/releases/tag/v1.0.1). Have in mind comic_getter depends on flags and parameters given through the command line so it won't work if you just double click it the excutable must be run through the cmd.
+In order to run Comic Getter executable you can skip installing Python 3 and the PyPi dependencies. You will only need to download [comic_getter.exe](https://github.com/magnuschase293/comic_getter/releases/tag/v1.0.1). Have in mind Comic Getter depends on flags and parameters given through the command line so it won't work if you just double click it, the excutable must be run through the cmd.
 
 ### Google Chrome and Chromedriver
 
-Comic_getter works with Selenium package to bypass cloudflare simulating to be a user that opens Google Chrome. Thus, it requires for Google Chrome and Chromedriver to be installed and the Chromedriver must match your Google Chrome's version. 
+Comic Getter works with Selenium package to bypass cloudflare simulating to be a user that opens Google Chrome. Thus, it requires for Google Chrome and Chromedriver to be installed and the Chromedriver must match your Google Chrome's version. 
 
 * [Here](https://www.google.com/intl/es-419/chrome/) is the link to chrome installer.
 
@@ -184,7 +184,7 @@ python3 path/to/__main__.py -v
 
 ## Features
 
-Almost every feature has already been explained, but here is a short list that compiles them all.
+Almost every feature has already been explained, but here is a short list that shows them all:
 
 * Choose between high and low quality.
 * Convert downloaded comics to cbz file format.
