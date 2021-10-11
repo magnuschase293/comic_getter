@@ -198,4 +198,4 @@ if __name__ == '__main__':
         print("Finished download.")
 
     if args.version:
-        print("\n Version: v1.0.1\n")
+        print("\n Version: v1.0.2\n")

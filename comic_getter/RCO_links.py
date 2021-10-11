@@ -99,7 +99,7 @@ class RCO_Comic:
 
         return domain
 
- def get_comic_and_issue_name(self, partial_link=None, driver=None):
+    def get_comic_and_issue_name(self, partial_link=None, driver=None):
         '''Returns comic name and issue's name.'''
 
         if partial_link is None:
