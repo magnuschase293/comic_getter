@@ -118,13 +118,26 @@ class RCO_Comic:
         comic_name = driver.find_element_by_css_selector(".bigChar").text 
         issue_name=driver.find_element_by_css_selector(f"a[href='{partial_link}']").text
 
-        #Fix possible : and / in comic_name and issue_name.
-        comic_name = comic_name.replace(u":", "\u2236")
-        comic_name = comic_name.replace(u"/", "\u2215")
-        issue_name = issue_name.replace(u":", "\u2236")
-        issue_name = issue_name.replace(u"/", "\u2215")
+        comic_name = self.replace_illegal_filename_characters(comic_name)
+        issue_name = self.replace_illegal_filename_characters(issue_name)
 
         return [partial_link, comic_name, issue_name], driver
+
+    def replace_illegal_filename_characters(self, word):
+        #Replaces forbidden filename characters with
+        word = word.replace(u":", "\u2236")
+        word = word.replace(u"/", "\u2215")
+        word = word.replace(u"?", "\uFE56")
+        word = word.replace(u"#", "\uFE5F")
+        word = word.replace(u"%", "\uFE6A")
+        word = word.replace(u"\\", "\u2216")
+        word = word.replace(u"|", "\u23A5")
+        word = word.replace(u"&", "\uFE60")
+        word = word.replace(u"<", "\uFE64")
+        word = word.replace(u">", "\uFE65")
+        word = word.replace(u"\"", "\u02ba")
+        word = word.replace(u"*", "\u2217")
+        return word
 
     def get_raw_links_list(self):
         '''Gathers the html code of the main link.'''
