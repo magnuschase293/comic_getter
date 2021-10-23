@@ -49,7 +49,7 @@ In order to run Comic Getter executable you can skip installing Python 3 and the
 
 Comic Getter works with Selenium package to bypass cloudflare simulating to be a user that opens Google Chrome. Thus, it requires for Google Chrome and Chromedriver to be installed and the Chromedriver must match your Google Chrome's version. 
 
-* [Here](https://www.google.com/intl/es-419/chrome/) is the link to chrome installer.
+* [Here](https://www.google.com/chrome/) is the link to chrome installer.
 
 To check what Google Chrome version is installed an individual needs to press the three dot icon on the top right corner of any chrome tab, open the help sub menu and select "about Google Chrome" option.
 
@@ -59,7 +59,7 @@ Only the first 2 digits in version, below the chrome icon, matter.
 
 <img width="720" alt="Screen Shot 2020-07-10 at 19 23 18" src="https://user-images.githubusercontent.com/65515378/87235168-73570f80-c3af-11ea-909e-925c3e44c776.png">
 
-* [Here](https://sites.google.com/a/chromium.org/chromedriver/downloads) is the link to different chromedriver versions and installers.
+* [Here](https://sites.google.com/chromium.org/driver/) is the link to different chromedriver versions and installers.
 
 ## Usage
 
