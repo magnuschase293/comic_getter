@@ -1,3 +1,4 @@
+.DS_Store
 *.pyc
 *.pyo
-.DS_Store
+comic_getter/config.json

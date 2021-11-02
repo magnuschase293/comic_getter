@@ -6,6 +6,7 @@ import time
 import os
 from pathlib import Path
 import platform
+import sys
 
 from tqdm import tqdm
 import requests
@@ -17,9 +18,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 
-# When making exe replace os.path.dirname(os.path.abspath(__file__)) 
+# When making exe replace os.path.dirname(os.path.abspath(__file__))
 # with  os.path.dirname(sys.executable) here and in config_generator.py
 # and import sys.
+
+
 class RCO_Comic:
     '''Collection of functions that allow to download a 
     readcomiconline comic with all it's issues.'''
@@ -37,8 +40,8 @@ class RCO_Comic:
         self.full_link = link
         self.domain = self.get_domain()
         self.main_link = self.get_main_link()
-        
-        #Config.json settings.
+
+        # Config.json settings.
         self.driver_path = data["chromedriver_path"]
         self.download_dir_path = data["download_dir"]
         self.quality = data["quality"]
@@ -58,7 +61,7 @@ class RCO_Comic:
     def convert_to_cbz(self, issue_data):
         '''Convert pages stored in target_path to .cbz file type'''
 
-        issue_path = self.issue_dir(issue_data)
+        issue_path = self.issue_dir(issue_data, True)
         cbz_dir = os.path.dirname(issue_path)
 
         shutil.make_archive(Path(f"{cbz_dir}/{issue_data[2]}"), 'zip',
@@ -67,18 +70,31 @@ class RCO_Comic:
         shutil.move(Path(f"{cbz_dir}/{issue_data[2]}.zip"),
                     Path(f"{cbz_dir}/{issue_data[2]}.cbz"))
 
-    def download_all_pages(self, issue_data):
+    def download_issue(self, issue_data):
         ''' Download image from link.'''
-
         issue_path = self.issue_dir(issue_data)
         print(f"Started downloading {issue_data[2]}")
 
-        # Create progress bar that monitors page download.
-        with tqdm(total=len(issue_data[0])) as pbar:
-            for index, link in enumerate(issue_data[0]):
+        # Figure out whether pages have been downloaded previously.
+        files_in_issue_path = list(os.walk(issue_path))[0][2]
+        pages_downloaded = 0
+        for file in files_in_issue_path:
+            if file[:4] == "page":
+                pages_downloaded += 1
 
-                # Download image
-                number_of_zeroes = len(str(len(issue_data[0])))
+        number_of_zeroes = len(str(len(issue_data[0])))
+        index_start = 0 if pages_downloaded == 0 else pages_downloaded-1
+        if pages_downloaded != 0:
+            last_page_number = str(index_start).zfill(number_of_zeroes)
+            os.remove(Path(f"{issue_path}/page{last_page_number}.jpg"))
+
+        # Create progress bar that monitors page download.
+        with tqdm(total=len(issue_data[0]), desc="Pages downloaded",
+                  leave=False, dynamic_ncols=True, initial=index_start,
+                  unit_scale=True, unit="pages") as pbar:
+            for index, link in enumerate(issue_data[0][index_start:],
+                                         start=index_start):
+                # Download page
                 modified_index = str(index).zfill(number_of_zeroes)
                 page_path = Path(f"{issue_path}/page{modified_index}.jpg")
                 page = requests.get(link, stream=True)
@@ -86,12 +102,14 @@ class RCO_Comic:
                     file.write(page.content)
                 pbar.update(1)
 
+            # Rename already finished download directory.
+            os.rename(issue_path, self.issue_dir(issue_data, True))
         print(f"Finished downloading {issue_data[2]}")
 
     def get_domain(self):
         '''Use regular expressions to extract domain from url.'''
         pattern = r"(https://|http://)(.+?)(?=/)"
-        match = re.search(pattern,self.full_link)
+        match = re.search(pattern, self.full_link)
         if match is None:
             print("Not a valid link.")
         else:
@@ -99,11 +117,11 @@ class RCO_Comic:
 
         return domain
 
-    def get_comic_and_issue_name(self, partial_link=None, driver=None):
-        '''Returns comic name and issue's name.'''
+    def get_partial_issue_data(self, partial_link=None, driver=None):
+        '''Returns partial name, comic name and issue's name.'''
 
         if partial_link is None:
-            partial_link = self.full_link.replace(self.domain,"") 
+            partial_link = self.full_link.replace(self.domain, "")
         if driver is None:
             driver = webdriver.Chrome(executable_path=self.driver_path,
                                       options=self.options)
@@ -112,32 +130,17 @@ class RCO_Comic:
             # load readcomiconline logo.
             wait = WebDriverWait(driver, 60)
             logo = wait.until(ec.visibility_of_element_located(
-                (By.CSS_SELECTOR, "a[title='ReadComicOnline - Read high quality comic online']")))
+                (By.CSS_SELECTOR, "a[title='ReadComicOnline - "
+                    "Read high quality comic online']")))
             time.sleep(0.5)
 
-        comic_name = driver.find_element_by_css_selector(".bigChar").text 
-        issue_name=driver.find_element_by_css_selector(f"a[href='{partial_link}']").text
+        comic_name = driver.find_element_by_css_selector(".bigChar").text
+        issue_name = driver.find_element_by_css_selector(f"a[href='{partial_link}']").text
 
         comic_name = self.replace_illegal_filename_characters(comic_name)
         issue_name = self.replace_illegal_filename_characters(issue_name)
 
         return [partial_link, comic_name, issue_name], driver
-
-    def replace_illegal_filename_characters(self, word):
-        #Replaces forbidden filename characters with
-        word = word.replace(u":", "\u2236")
-        word = word.replace(u"/", "\u2215")
-        word = word.replace(u"?", "\uFE56")
-        word = word.replace(u"#", "\uFE5F")
-        word = word.replace(u"%", "\uFE6A")
-        word = word.replace(u"\\", "\u2216")
-        word = word.replace(u"|", "\u23A5")
-        word = word.replace(u"&", "\uFE60")
-        word = word.replace(u"<", "\uFE64")
-        word = word.replace(u">", "\uFE65")
-        word = word.replace(u"\"", "\u02ba")
-        word = word.replace(u"*", "\u2217")
-        return word
 
     def get_raw_links_list(self):
         '''Gathers the html code of the main link.'''
@@ -171,7 +174,8 @@ class RCO_Comic:
     def get_main_link(self):
         '''Returns main link from full link.'''
 
-        generic_main_link = re.compile(r"(https://|http://)(.+?/.+?/.+?)(?=/|$)", re.I)
+        generic_main_link = re.compile(
+            r"(https://|http://)(.+?/.+?/.+?)(?=/|$)", re.I)
         main_link_regex = re.search(generic_main_link, self.full_link)
         main_link = main_link_regex[0]
         return main_link
@@ -226,12 +230,10 @@ class RCO_Comic:
 
     def is_comic_downloaded(self, comic_issue_name):
         '''Checks if comic has already been downloaded.'''
-
         download_path = Path(f"{self.download_dir_path}/{comic_issue_name[1]}"
                              f"/{comic_issue_name[2]}")
         cbz_path = Path(f"{self.download_dir_path}/{comic_issue_name[1]}"
                         f"/{comic_issue_name[2]}.cbz")
-
         issue = comic_issue_name[2]
 
         if download_path.exists():
@@ -243,31 +245,66 @@ class RCO_Comic:
         else:
             return False
 
-    def issue_dir(self, issue_data):
+    def is_comic_partially_downloaded(self, comic_issue_name):
+        '''Checks if comic has been partially downloaded.'''
+
+        download_path = Path(f"{self.download_dir_path}/{comic_issue_name[1]}"
+                             f"/{comic_issue_name[2]}_dw")
+        issue = comic_issue_name[2]
+
+        if download_path.exists():
+            return True
+        else:
+            return False
+
+    def issue_dir(self, issue_data, downloaded=False):
         ''' Creates and returns issue download directory.'''
         issue_path = Path(f"{self.download_dir_path}/"
-                          f"{issue_data[1]}/{issue_data[2]}")
+                          f"{issue_data[1]}/{issue_data[2]}_dw")
 
         # Only if dir doesn't already exists it is created.
-        if not issue_path.exists():
+        if downloaded:
+            issue_path = Path(f"{self.download_dir_path}/"
+                              f"{issue_data[1]}/{issue_data[2]}")
+        elif not issue_path.exists():
             os.makedirs(issue_path)
+
         return issue_path
 
     def keep_only_cbz(self, issue_data):
         '''Keep only .cbz file in issue directory.'''
-        issue_path = self.issue_dir(issue_data)
+        issue_path = self.issue_dir(issue_data, True)
         shutil.rmtree(issue_path)
 
-    def range_select(self, start, ending, raw_links_list, q):
+    def range_select(self, raw_links_list, q, start, ending=None,):
         '''Extracts links from the ocurrence of the first pattern till the 
            ocurrence of the second one.'''
 
         # Due to RCO inverting the order of issues on their website
         # (issue #134 is shown above issue #123) the ending and start patterns
         # order are reversed.
-        range_re = re.compile(rf"(.+)(<.+?{ending})(?=</a>)(.+)"
-                              rf"(<.+?{start})(?=</a>)", re.M | re.S | re.I)
+        range_re = ""
+        if ending:
+            range_re = re.compile(rf".+(<.+?{ending}.+?<.+?{start}.+?</a>)",
+                                  re.M | re.S | re.I)
+        else:
+            range_re =re.compile(rf".+(<.+?{start}.+?</a>)",
+                                  re.M | re.S | re.I)
         result = re.search(range_re, str(raw_links_list))
-        raw_links_list = (result.group(2), result.group(3), result.group(4))
-        raw_links_list = "\n".join(raw_links_list)
+        raw_links_list = (result.group(1))
         q.put(raw_links_list)
+
+    def replace_illegal_filename_characters(self, word):
+        # Replaces forbidden filename characters with
+        word = word.replace(u":", "\u2236")
+        word = word.replace(u"/", "\u2215")
+        word = word.replace(u"?", "\uFE56")
+        word = word.replace(u"%", "\uFE6A")
+        word = word.replace(u"\\", "\u2216")
+        word = word.replace(u"|", "\u23A5")
+        word = word.replace(u"&", "\uFE60")
+        word = word.replace(u"<", "\uFE64")
+        word = word.replace(u">", "\uFE65")
+        word = word.replace(u"\"", "\u02ba")
+        word = word.replace(u"*", "\u2217")
+        return word

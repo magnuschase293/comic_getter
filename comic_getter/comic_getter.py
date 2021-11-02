@@ -39,11 +39,11 @@ parser.add_argument("-i", "--input",  nargs='+', type=str, dest="input",
                     help="Get comic issues from main link.")
 parser.add_argument('-k', '--keep', action='store_true', dest="keep",
                     help='Keep jpgs after conversion.')
-parser.add_argument('-r', "--range", nargs=2, type=str,
+parser.add_argument('-r', "--range", nargs="*", type=str,
                     dest="range", help='Start and ending regex to download.')
-parser.add_argument('--rt', "--ranget", nargs=3, type=str,
-                    dest="ranget", help='Same as -r, but with a third argument'
-                    ' that allows user to increase time limit.')
+parser.add_argument('--rt', "--ranget", nargs="*", type=str,
+                    dest="ranget", help='Same as -r, but with a second/third' 
+                    'argument that allows user to increase time limit.')
 parser.add_argument('-s', "--skip", nargs=1, type=int, default=[""],
                     dest="skip", help='Number of issues to skip.')
 parser.add_argument("-x", "--single",  nargs="+", dest="single",
@@ -52,8 +52,15 @@ parser.add_argument("-x", "--single",  nargs="+", dest="single",
 parser.add_argument('-v', '--version', action='store_true', dest="version",
                     help='See current version.')
 
-
 args = parser.parse_args()
+if args.range and len(args.range) not in [1,2]:
+    print("comic_getter: error: argument -r/--range: expected 1 or 2 arguments"
+        )
+    sys.exit()
+if args.ranget and len(args.ranget) not in [2,3]:
+    print("comic_getter: error: argument -r/--range: expected 2 or 3 arguments"
+        )
+    sys.exit()
 if __name__ == '__main__':
     # multiprocessing.freeze_support() use only to make an execcutable.
     # Check if config.json exists
@@ -80,10 +87,10 @@ if __name__ == '__main__':
                 # Multiprocessing module is used to figure out if re module
                 # hangs.
                 start = args.range[0]
-                end = args.range[1]
+                end = args.range[1] if len(args.range)==2 else None
                 q = Queue()
                 p1 = Process(target=comic.range_select,
-                             args=(start, end, raw_links_list, q))
+                             args=( raw_links_list, q, start, end))
                 p1.start()
                 p1.join(30)
                 if q.empty():
@@ -101,12 +108,13 @@ if __name__ == '__main__':
                 # Multiprocessing module is used to figure out if
                 # re module hangs.
                 start = args.ranget[0]
-                end = args.ranget[1]
+                end = args.range[1] if len(args.ranget)==3 else None
+                timeout= args.range[2] if len(args.ranget)==3 else args.ranget[1]
                 q = Queue()
                 p1 = Process(target=comic.range_select,
-                             args=(start, end, raw_links_list, q))
+                             args=(raw_links_list, q, start, end))
                 p1.start()
-                p1.join(int(args.ranget[2]))
+                p1.join(int(timeout))
                 if q.empty():
                     p1.terminate()
                     stop_animation = True
@@ -126,44 +134,39 @@ if __name__ == '__main__':
             if args.skip[0]:
                 partial_issues_links = partial_issues_links[args.skip[0]:]
 
-            # Ignore already downloaded issues links
-
-            issues_names= []
+            partial_issues_data = []
             driver = None
             for link in partial_issues_links:
-                issue_name,driver =comic.get_comic_and_issue_name(
-                link,driver)
-                issues_names.append(issue_name)
+                partial_issue_data, driver = comic.get_partial_issue_data(
+                    link, driver)
+                partial_issues_data.append(partial_issue_data)
             driver.quit()
 
-            downloaded_issues = [issue_name for issue_name in issues_names
-                                 if comic.is_comic_downloaded(issue_name)]
-
-            links_fetcher = operator.itemgetter(0)
-            downloaded_issues_links = [links_fetcher(
-                issue) for issue in downloaded_issues]
-            for issue_name in issues_names[:]:
-                if issue_name[0] in downloaded_issues_links:
-                    issues_names.remove(issue_name)
+            # Ignore already downloaded issues links
+            partial_issues_data[:] = [partial_issue_data for partial_issue_data
+                                      in partial_issues_data if not
+                                      comic.is_comic_downloaded(partial_issue_data)]
             stop_animation = True
+
             print("All issues links were gathered.")
             time.sleep(1)
 
             # Continue downloading remaining links.
-            for issue_name in issues_names:
+            for partial_issue_data in partial_issues_data:
                 stop_animation = False
                 t2 = threading.Thread(target=animation, args=["Loading"])
                 t2.start()
 
-                pages_links = comic.get_pages_links(issue_name[0])
-                #Pages links, comic name and issue name are packed inside issue_data
-                # tuple.
-                issue_data = (pages_links, issue_name[1], issue_name[2])
+                pages_links = comic.get_pages_links(partial_issue_data[0])
+                # Pages links, comic name and issue name are packed inside 
+                #issue_data tuple.
+                issue_data = (pages_links, partial_issue_data[1], 
+                    partial_issue_data[2])
                 print(f"All links to pages of {issue_data[2]} were gathered.")
 
                 stop_animation = True
                 comic.issue_dir(issue_data)
-                comic.download_all_pages(issue_data)
+                comic.download_issue(issue_data)
 
                 # cbz conversion
                 if args.cbz:
@@ -181,13 +184,14 @@ if __name__ == '__main__':
         for issue_link in args.single:
             # Allow single comic issue to be downloaded.
             comic = RCO_Comic(issue_link)
-            issue_name= comic.get_comic_and_issue_name()
- 
+            partial_issue_data = comic.get_partial_issue_data()
+
             if not comic.is_comic_downloaded(issue_name):
                 pages_links = comic.get_pages_links()
-                issue_data = (pages_links, issue_name[1], issue_name[2])
+                issue_data = (pages_links, partial_issue_data[1],
+                              partial_issue_data[2])
                 comic.issue_dir(issue_data)
-                comic.download_all_pages(issue_data)
+                comic.download_issue(issue_data)
             else:
                 continue
             # cbz conversion
@@ -198,4 +202,4 @@ if __name__ == '__main__':
         print("Finished download.")
 
     if args.version:
-        print("\n Version: v1.1.0\n")
+        print("\n Version: v2.0.0\n")
