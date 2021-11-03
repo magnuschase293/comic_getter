@@ -68,7 +68,7 @@ if __name__ == '__main__':
         msg = "\nThere was no config.json file so let's create one.\n"
         print(msg)
         ConfigJSON().config_create()
-        raise TypeError
+        sys.exit()
 
     # Download comic from link.
 
@@ -202,4 +202,4 @@ if __name__ == '__main__':
         print("Finished download.")
 
     if args.version:
-        print("\n Version: v2.0.0\n")
+        print("\n Version: v2.0.1\n")
