@@ -168,9 +168,14 @@ If the user wants to download [Wolverine (1988)](https://readcomiconline.to/Comi
 
 By inputing the following code the issues will be downloaded:
 ```bash
-python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Wolverine-1988 -r "issue #2" "issue #12"
+python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Wolverine-1988 -r "#2" "#12"
 ```
 Notice the inverted commas are added for the command line to consider each pattern a single string and ignore any spaces or special characters in the patterns.
+
+If you wanted to select only issue #2 of [Wolverine (1988)](https://readcomiconline.to/Comic/Wolverine-1988) using range select you should type the following command:
+```bash
+python3 path/to/__main__.py -i https://readcomiconline.to/Comic/Wolverine-1988 -r "#2"
+```
 
 Both -r and --rt are really similar the only difference lies in the fact that --rt has an extra argument to expand the 30 seconds timeout for re module to find the start and ending pattern.
 
@@ -192,7 +197,7 @@ Almost every feature has already been explained, but here is a short list that s
 * Download all issues from a single comic in readcomiconline.to .
 * Download multiple comics and issues at once.
 * Range select issues through start and ending arguments.
-* Resume download by skipping already downloaded comics. The script considers an issue downloaded when it creates the directory with its name (Notice that if the download is stopped in the middle of an issue being downloaded, you will need to manually delete this last folder in order for the program to re download the issue).
+* Resume download.
 * Skip unwanted comics.
 
 ## Troubleshooting
