@@ -2,3 +2,4 @@
 *.pyc
 *.pyo
 comic_getter/config.json
+comic_getter/__pycache__

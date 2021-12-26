@@ -42,7 +42,7 @@ parser.add_argument('-k', '--keep', action='store_true', dest="keep",
 parser.add_argument('-r', "--range", nargs="*", type=str,
                     dest="range", help='Start and ending regex to download.')
 parser.add_argument('--rt', "--ranget", nargs="*", type=str,
-                    dest="ranget", help='Same as -r, but with a second/third' 
+                    dest="ranget", help='Same as -r, but with a second/third '  
                     'argument that allows user to increase time limit.')
 parser.add_argument('-s', "--skip", nargs=1, type=int, default=[""],
                     dest="skip", help='Number of issues to skip.')

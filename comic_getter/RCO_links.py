@@ -112,6 +112,7 @@ class RCO_Comic:
         match = re.search(pattern, self.full_link)
         if match is None:
             print("Not a valid link.")
+            sys.exit()
         else:
             domain = match[0]
 
@@ -214,6 +215,8 @@ class RCO_Comic:
         except:
             pass
         time.sleep(1)
+        
+        driver.execute_script("window.scrollTo(0,document.body.scrollHeight);")
 
         # An explicit wait is trigger to wait for imgLoader to disappear.
         wait.until(ec.invisibility_of_element((By.ID, "imgLoader")))
