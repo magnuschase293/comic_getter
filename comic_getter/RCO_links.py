@@ -13,6 +13,7 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
@@ -124,7 +125,7 @@ class RCO_Comic:
         if partial_link is None:
             partial_link = self.full_link.replace(self.domain, "")
         if driver is None:
-            driver = webdriver.Chrome(executable_path=self.driver_path,
+            driver = webdriver.Chrome(service=Service('/usr/local/bin/chromedriver'),
                                       options=self.options)
             driver.get(self.main_link)
             # A 60 second margin is given for browser to bypass cloudflare and
@@ -135,8 +136,8 @@ class RCO_Comic:
                     "Read high quality comic online']")))
             time.sleep(0.5)
 
-        comic_name = driver.find_element_by_css_selector(".bigChar").text
-        issue_name = driver.find_element_by_css_selector(f"a[href='{partial_link}']").text
+        comic_name = driver.find_element(By.CSS_SELECTOR, ".bigChar").text
+        issue_name = driver.find_element(By.CSS_SELECTOR, f"a[href='{partial_link}']").text
 
         comic_name = self.replace_illegal_filename_characters(comic_name)
         issue_name = self.replace_illegal_filename_characters(issue_name)
@@ -146,7 +147,7 @@ class RCO_Comic:
     def get_raw_links_list(self):
         '''Gathers the html code of the main link.'''
 
-        driver = webdriver.Chrome(executable_path=self.driver_path,
+        driver = webdriver.Chrome(service=Service('/usr/local/bin/chromedriver'),
                                   options=self.options)
         driver.set_window_size(300, 500)
 
@@ -159,7 +160,7 @@ class RCO_Comic:
         time.sleep(0.5)
 
         # The whole html code is downloaded.
-        raw_links_list = driver.find_element_by_class_name("listing")
+        raw_links_list = driver.find_element(By.CLASS_NAME, "listing")
         raw_links_list = str(raw_links_list.get_attribute('innerHTML'))
         driver.quit()
         return raw_links_list
@@ -189,7 +190,7 @@ class RCO_Comic:
         else:
             issue_link = self.full_link
 
-        driver = webdriver.Chrome(executable_path=self.driver_path,
+        driver = webdriver.Chrome(service=Service('/usr/local/bin/chromedriver'),
                                   options=self.options)
         driver.set_window_size(300, 500)
         driver.get(issue_link)
@@ -203,12 +204,12 @@ class RCO_Comic:
             (By.CSS_SELECTOR, "a[title='ReadComicOnline - Read high quality comic online']")))
 
         # An option to load all pages of the issue in the same tab is selected.
-        read_type = Select(driver.find_element_by_id('selectReadType'))
+        read_type = Select(driver.find_element(By.ID, 'selectReadType'))
         read_type.select_by_index(1)
         time.sleep(1)
 
         # According to config.json the quality of the issue is selected.
-        select_quality = Select(driver.find_element_by_id('selectQuality'))
+        select_quality = Select(driver.find_element(By.ID, 'selectQuality'))
         quality = self.quality
         try:
             select_quality.select_by_value(quality)
@@ -220,7 +221,7 @@ class RCO_Comic:
 
         # An explicit wait is trigger to wait for imgLoader to disappear.
         wait.until(ec.invisibility_of_element((By.ID, "imgLoader")))
-        element = driver.find_element_by_id("divImage")
+        element = driver.find_element(By.ID, "divImage")
         raw_pages_links = element.get_attribute('innerHTML')
         driver.quit()
 
